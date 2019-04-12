@@ -42,12 +42,12 @@ public class Hello {
 
         WebSocketStompClient stompClient = new WebSocketStompClient(sockJsClient);
 
-        String url = "ws://{host}:{port}/gs-messaging-stomp-websocket-0.1.0/hello";
+        String url = "ws://{host}:{port}/hello";
         return stompClient.connect(url, headers, new MyHandler(), "localhost", 8080);
     }
 
     public void subscribeGreetings(StompSession stompSession) throws ExecutionException, InterruptedException {
-        stompSession.subscribe("/gs-messaging-stomp-websocket-0.1.0/topic/response", new StompFrameHandler() {
+        stompSession.subscribe("/topic/response", new StompFrameHandler() {
 
             public Type getPayloadType(StompHeaders stompHeaders) {
                 return ByteArrayModel.class;
@@ -59,11 +59,13 @@ public class Hello {
         });
     }
 
-    public void sendHello(StompSession stompSession) {
+    public void sendHello(StompSession stompSession, byte[] bytes) {
     	ByteArrayModel model = new ByteArrayModel();
         ObjectMapper mapper = new ObjectMapper();
         try {
         	String jsonHello = "{ \"name\" : \"Nick\" }";
+        	model.setData(bytes);
+            //stompSession.send("/app/hello",mapper.writeValueAsBytes(model));
             stompSession.send("/app/hello",mapper.writeValueAsBytes(model));
 			
 		} catch (JsonProcessingException e) {
