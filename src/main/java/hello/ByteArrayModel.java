@@ -7,7 +7,7 @@ public class ByteArrayModel {
 
     private byte[] data;
 
-    public ByteArrayModel() {
+    private ByteArrayModel() {
     	this.setTime(Calendar.getInstance().getTimeInMillis());
 
         this.data = new byte[] {'t','e','s','t'};

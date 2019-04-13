@@ -30,7 +30,7 @@ public class CustomStompSessionHandler implements StompSessionHandler{
 	public void afterConnected(StompSession session, StompHeaders connectedHeaders) {
 		this.setSession(session);
 		session.subscribe(WEBSOCKET_TOPIC, this);
-	    session.send("/app/server-side", "");		
+	    //session.send("/app/server-side", "");		
 	}
 
 	@Override

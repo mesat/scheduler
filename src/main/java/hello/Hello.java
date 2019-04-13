@@ -1,13 +1,18 @@
 package hello;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.JsonbHttpMessageConverter;
 import org.springframework.messaging.simp.stomp.StompFrameHandler;
 import org.springframework.messaging.simp.stomp.StompHeaders;
 import org.springframework.messaging.simp.stomp.StompSession;
 import org.springframework.messaging.simp.stomp.StompSessionHandlerAdapter;
+import org.springframework.util.MimeType;
+import org.springframework.util.MimeTypeUtils;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.web.socket.WebSocketHttpHeaders;
+import org.springframework.web.socket.adapter.standard.StandardToWebSocketExtensionAdapter;
 import org.springframework.web.socket.client.standard.StandardWebSocketClient;
+import org.springframework.web.socket.config.annotation.WebSocketTransportRegistration;
 import org.springframework.web.socket.messaging.WebSocketStompClient;
 import org.springframework.web.socket.sockjs.client.SockJsClient;
 import org.springframework.web.socket.sockjs.client.Transport;
@@ -23,16 +28,17 @@ import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.logging.Logger;
 
+import javax.websocket.OnMessage;
+
 /**
  * Created by nick on 30/09/2015.
  */
 public class Hello {
 
     private static Logger logger = Logger.getLogger(Hello.class.getName());
-
     private final static WebSocketHttpHeaders headers = new WebSocketHttpHeaders();
-
     public ListenableFuture<StompSession> connect() {
+    	WebSocketTransportRegistration reg = new WebSocketTransportRegistration();
 
         Transport webSocketTransport = new WebSocketTransport(new StandardWebSocketClient());
         List<Transport> transports = Collections.singletonList(webSocketTransport);
@@ -58,15 +64,17 @@ public class Hello {
             }
         });
     }
-
     public void sendHello(StompSession stompSession, byte[] bytes) {
-    	ByteArrayModel model = new ByteArrayModel();
+    	ByteArrayModel model = new ByteArrayModel(bytes);
         ObjectMapper mapper = new ObjectMapper();
         try {
         	String jsonHello = "{ \"name\" : \"Nick\" }";
         	model.setData(bytes);
             //stompSession.send("/app/hello",mapper.writeValueAsBytes(model));
-            stompSession.send("/app/hello",mapper.writeValueAsBytes(model));
+
+    		StompHeaders headers = new StompHeaders();
+    		headers.setDestination("/app/hello");
+            stompSession.send(headers,mapper.writeValueAsBytes(model));
 			
 		} catch (JsonProcessingException e) {
 			// TODO Auto-generated catch block
@@ -76,6 +84,7 @@ public class Hello {
     }
 
     private class MyHandler extends StompSessionHandlerAdapter {
+    	
         public void afterConnected(StompSession stompSession, StompHeaders stompHeaders) {
             logger.info("Now connected");
         }

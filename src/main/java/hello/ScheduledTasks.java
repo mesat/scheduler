@@ -75,6 +75,14 @@ public class ScheduledTasks {
 	static ListenableFuture<StompSession> f = null;
 	static StompSession stompSession = null;
 
+	Hello helloClient1 = null;
+	static ListenableFuture<StompSession> f1 = null;
+	static StompSession stompSession1 = null;
+
+	Hello helloClient2 = null;
+	static ListenableFuture<StompSession> f2 = null;
+	static StompSession stompSession2 = null;
+
 	public ScheduledTasks() {
 
 		try {
@@ -136,16 +144,20 @@ public class ScheduledTasks {
 		//
 	}
 
-	 @Scheduled(fixedRate = 50,initialDelay=5000)
+	 @Scheduled(fixedRate = 600,initialDelay=500)
 	public void reportCurrentTime() throws Exception {
 		if (!stompSession.isConnected()) {
 			helloClient = null;
 		}
 		Initialize();
-		byte[] data = new byte[mv.get(0).rows()];
+		byte[] data = new byte[(int) (mv.get(0).total()*mv.get(0).elemSize())];
 		mv.get(0).get(0, 0, data);
 		
 		helloClient.sendHello(stompSession,data);
+		/*stompSession.disconnect();
+		helloClient = null;
+		stompSession = null;*/
+		
 		/*
 		 * StompSession session = ((CustomStompSessionHandler)
 		 * sessionHandler).getSession(); session.send("/app/server-side", new
@@ -154,16 +166,15 @@ public class ScheduledTasks {
 		log.info("The time is now {}", dateFormat.format(new Date()));
 	}
 
-	// @Scheduled(fixedRate = 50,initialDelay=5000)
+	 @Scheduled(fixedRate = 600,initialDelay=500)
 	public void reportCurrentTime2() throws Exception {
 		if (!stompSession.isConnected()) {
 			helloClient = null;
 		}
 		Initialize();
-		byte[] data = new byte[mv.get(1).rows()];
-		mv.get(1).get(0, 0, data);
-		
-		helloClient.sendHello(stompSession,data);
+		byte[] data2 = new byte[(int) (mv.get(1).total()*mv.get(1).elemSize())];
+		mv.get(1).get(0, 0, data2);
+		helloClient.sendHello(stompSession,data2);
 		/*
 		 * StompSession session = ((CustomStompSessionHandler)
 		 * sessionHandler).getSession(); session.send("/app/server-side", new
@@ -172,16 +183,16 @@ public class ScheduledTasks {
 		log.info("The time is now {}", dateFormat.format(new Date()));
 	}
 
-	// @Scheduled(fixedRate = 50,initialDelay=5000)
+	 @Scheduled(fixedRate = 600,initialDelay=500)
 	public void reportCurrentTime3() throws Exception {
 		if (!stompSession.isConnected()) {
 			helloClient = null;
 		}
 		Initialize();
-		byte[] data = new byte[mv.get(2).rows()];
-		mv.get(2).get(0, 0, data);
-		
-		helloClient.sendHello(stompSession,data);
+		byte[] data3 = new byte[(int) (mv.get(2).total()*mv.get(2).elemSize())];
+		mv.get(2).get(0, 0, data3);
+		Thread.sleep(10);
+		helloClient.sendHello(stompSession,data3);
 		/*
 		 * StompSession session = ((CustomStompSessionHandler)
 		 * sessionHandler).getSession(); session.send("/app/server-side", new
