@@ -4,6 +4,8 @@ import java.util.Calendar;
 
 public class ByteArrayModel {
 	private long time;
+	private int width;
+	private int height;
 
     private byte[] data;
 
@@ -37,5 +39,21 @@ public class ByteArrayModel {
 	public String toString() {
 		// TODO Auto-generated method stub
 		return "";
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public void setHeight(int height) {
+		this.height = height;
 	}
 }

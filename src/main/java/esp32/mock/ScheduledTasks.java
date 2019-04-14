@@ -104,7 +104,7 @@ public class ScheduledTasks {
 
 			System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
-			String imgPath = "/home/mesat/Downloads/maxresdefault.jpg";
+			String imgPath = "/home/mesat/Downloads/maxresdefault.png";
 			Mat image = Imgcodecs.imread(imgPath, Imgcodecs.IMREAD_UNCHANGED);
 			image.convertTo(image, CvType.CV_8UC3);
 			Core.split(image, mv);
@@ -121,10 +121,12 @@ public class ScheduledTasks {
 		Initialize();
 		byte[] data = new byte[(int) (mv.get(0).total() * mv.get(0).elemSize())];
 		mv.get(0).get(0, 0, data);
-
-		client.sendData(stompSession, data);
+    	ByteArrayModel model = new ByteArrayModel(data);
+    	model.setWidth(mv.get(0).width());
+    	model.setHeight(mv.get(0).height());
+		client.sendData(stompSession, model);
 		
-		log.info("The time is now {}", dateFormat.format(new Date()));
+		log.info("Time: {}", dateFormat.format(new Date()));
 	}
 
 	@Scheduled(fixedRate = 100, initialDelay = 500)
@@ -135,9 +137,12 @@ public class ScheduledTasks {
 		Initialize();
 		byte[] data2 = new byte[(int) (mv.get(1).total() * mv.get(1).elemSize())];
 		mv.get(1).get(0, 0, data2);
-		client.sendData(stompSession, data2);
+    	ByteArrayModel model = new ByteArrayModel(data2);
+    	model.setWidth(mv.get(1).width());
+    	model.setHeight(mv.get(1).height());
+		client.sendData(stompSession, model);
 		
-		log.info("The time is now {}", dateFormat.format(new Date()));
+		log.info("Time: {}", dateFormat.format(new Date()));
 	}
 
 	@Scheduled(fixedRate = 100, initialDelay = 500)
@@ -148,9 +153,11 @@ public class ScheduledTasks {
 		Initialize();
 		byte[] data3 = new byte[(int) (mv.get(2).total() * mv.get(2).elemSize())];
 		mv.get(2).get(0, 0, data3);
-		Thread.sleep(10);
-		client.sendData(stompSession, data3);
+    	ByteArrayModel model = new ByteArrayModel(data3);
+    	model.setWidth(mv.get(1).width());
+    	model.setHeight(mv.get(1).height());
+		client.sendData(stompSession, model);
 		
-		log.info("The time is now {}", dateFormat.format(new Date()));
+		log.info("Time: {}", dateFormat.format(new Date()));
 	}
 }

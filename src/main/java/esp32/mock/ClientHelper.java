@@ -62,11 +62,9 @@ public class ClientHelper {
             }
         });
     }
-    public void sendData(StompSession stompSession, byte[] bytes) {
-    	ByteArrayModel model = new ByteArrayModel(bytes);
+    public void sendData(StompSession stompSession, ByteArrayModel model) {
         ObjectMapper mapper = new ObjectMapper();
         try {
-        	model.setData(bytes);
     		StompHeaders headers = new StompHeaders();
     		headers.setDestination("/app/rgbdata");
             stompSession.send(headers,mapper.writeValueAsBytes(model));
