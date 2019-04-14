@@ -1,4 +1,4 @@
-package hello;
+package esp32.mock;
 
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.JsonbHttpMessageConverter;
@@ -46,7 +46,7 @@ public class ClientHelper {
 
         WebSocketStompClient stompClient = new WebSocketStompClient(sockJsClient);
 
-        String url = "ws://{host}:{port}/hello";
+        String url = "ws://{host}:{port}/rgbdata";
         return stompClient.connect(url, headers, new CustomSSHandler(), "localhost", 8080);
     }
 
@@ -68,7 +68,7 @@ public class ClientHelper {
         try {
         	model.setData(bytes);
     		StompHeaders headers = new StompHeaders();
-    		headers.setDestination("/app/hello");
+    		headers.setDestination("/app/rgbdata");
             stompSession.send(headers,mapper.writeValueAsBytes(model));
 			
 		} catch (JsonProcessingException e) {

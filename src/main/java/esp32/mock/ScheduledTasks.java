@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package hello;
+package esp32.mock;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -62,12 +62,7 @@ public class ScheduledTasks {
 
 	private static final SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 
-	private WebSocketStompClient stompClient = null;
-	private StompSessionHandler sessionHandler = null;
-	private static final String WEBSOCKET_URI = "ws://localhost:8080/websocket";
-	private static final String WEBSOCKET_TOPIC = "/topic";
 
-	private List<Mat> imageList = new ArrayList<>();
 	private List<Mat> mv = new ArrayList<>();
 
 	ClientHelper client = null;
@@ -105,7 +100,7 @@ public class ScheduledTasks {
 			log.info("Subscribing to greeting topic using session " + stompSession);
 			client.subscribeResponse(stompSession);
 
-			log.info("Sending hello message" + stompSession);
+			log.info("Sending esp32.mock message" + stompSession);
 
 			System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
