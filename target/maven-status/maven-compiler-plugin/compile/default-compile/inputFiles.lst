@@ -1,6 +1,5 @@
 /home/mesat/git/scheduler/src/main/java/hello/ScheduledTasks.java
 /home/mesat/git/scheduler/src/main/java/hello/ByteArrayModel.java
-/home/mesat/git/scheduler/src/main/java/hello/WebSocketConfig.java
 /home/mesat/git/scheduler/src/main/java/hello/Application.java
 /home/mesat/git/scheduler/src/main/java/hello/ByteArrayResponseModel.java
 /home/mesat/git/scheduler/src/main/java/hello/CustomStompSessionHandler.java

@@ -66,20 +66,19 @@ public class ScheduledTasks {
 	private StompSessionHandler sessionHandler = null;
 	private static final String WEBSOCKET_URI = "ws://localhost:8080/websocket";
 	private static final String WEBSOCKET_TOPIC = "/topic";
-	
 
 	private List<Mat> imageList = new ArrayList<>();
 	private List<Mat> mv = new ArrayList<>();
 
-	Hello helloClient = null;
+	ClientHelper client = null;
 	static ListenableFuture<StompSession> f = null;
 	static StompSession stompSession = null;
 
-	Hello helloClient1 = null;
+	ClientHelper helloClient1 = null;
 	static ListenableFuture<StompSession> f1 = null;
 	static StompSession stompSession1 = null;
 
-	Hello helloClient2 = null;
+	WebSocketClient helloClient2 = null;
 	static ListenableFuture<StompSession> f2 = null;
 	static StompSession stompSession2 = null;
 
@@ -95,109 +94,68 @@ public class ScheduledTasks {
 	}
 
 	private void Initialize() throws Exception {
-		if (helloClient == null) {
-			/*
-			 * WebSocketContainer container = ContainerProvider.getWebSocketContainer();
-			 * client = new StandardWebSocketClient(container); stompClient = new
-			 * WebSocketStompClient(client); stompClient.setMessageConverter(new
-			 * MappingJackson2MessageConverter());
-			 */
+		if (client == null) {
+			
 
-			/*
-			 * sessionHandler = new CustomStompSessionHandler();
-			 * //stompClient.connect("localhost:8080", sessionHandler); //new
-			 * Scanner(System.in).nextLine(); // Don't close immediately.
-			 * 
-			 * List<Transport> transports = new ArrayList<Transport>(2); transports.add(new
-			 * WebSocketTransport(new StandardWebSocketClient())); //transports.add(new
-			 * RestTemplateXhrTransport()); SockJsClient sockJsClient = new
-			 * SockJsClient(transports); stompClient = new
-			 * WebSocketStompClient(sockJsClient); stompClient.setMessageConverter(new
-			 * MappingJackson2MessageConverter()); //DefaultStompFrameHandler stompHandler =
-			 * new DefaultStompFrameHandler(); try { stompClient.connect(WEBSOCKET_URI,
-			 * sessionHandler); stompClient.start(); //new Scanner(System.in).nextLine();
-			 * 
-			 * } finally { }
-			 */
+			client = new ClientHelper();
 
-			helloClient = new Hello();
-
-			f = helloClient.connect();
+			f = client.connect();
 			stompSession = f.get(1, TimeUnit.DAYS);
 
 			log.info("Subscribing to greeting topic using session " + stompSession);
-			helloClient.subscribeGreetings(stompSession);
+			client.subscribeResponse(stompSession);
 
 			log.info("Sending hello message" + stompSession);
-			//helloClient.sendHello(stompSession);
 
 			System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
 			String imgPath = "/home/mesat/Downloads/maxresdefault.jpg";
 			Mat image = Imgcodecs.imread(imgPath, Imgcodecs.IMREAD_UNCHANGED);
 			image.convertTo(image, CvType.CV_8UC3);
-			// Imgproc.cvtColor(image, image, Imgproc.COLOR_RGB2Lab);
 			Core.split(image, mv);
 
 		}
 
-		//
 	}
 
-	 @Scheduled(fixedRate = 600,initialDelay=500)
+	@Scheduled(fixedRate = 100, initialDelay = 500)
 	public void reportCurrentTime() throws Exception {
 		if (!stompSession.isConnected()) {
-			helloClient = null;
+			client = null;
 		}
 		Initialize();
-		byte[] data = new byte[(int) (mv.get(0).total()*mv.get(0).elemSize())];
+		byte[] data = new byte[(int) (mv.get(0).total() * mv.get(0).elemSize())];
 		mv.get(0).get(0, 0, data);
+
+		client.sendData(stompSession, data);
 		
-		helloClient.sendHello(stompSession,data);
-		/*stompSession.disconnect();
-		helloClient = null;
-		stompSession = null;*/
-		
-		/*
-		 * StompSession session = ((CustomStompSessionHandler)
-		 * sessionHandler).getSession(); session.send("/app/server-side", new
-		 * ByteArrayModel());
-		 */
 		log.info("The time is now {}", dateFormat.format(new Date()));
 	}
 
-	 @Scheduled(fixedRate = 600,initialDelay=500)
+	@Scheduled(fixedRate = 100, initialDelay = 500)
 	public void reportCurrentTime2() throws Exception {
 		if (!stompSession.isConnected()) {
-			helloClient = null;
+			client = null;
 		}
 		Initialize();
-		byte[] data2 = new byte[(int) (mv.get(1).total()*mv.get(1).elemSize())];
+		byte[] data2 = new byte[(int) (mv.get(1).total() * mv.get(1).elemSize())];
 		mv.get(1).get(0, 0, data2);
-		helloClient.sendHello(stompSession,data2);
-		/*
-		 * StompSession session = ((CustomStompSessionHandler)
-		 * sessionHandler).getSession(); session.send("/app/server-side", new
-		 * ByteArrayModel());
-		 */
+		client.sendData(stompSession, data2);
+		
 		log.info("The time is now {}", dateFormat.format(new Date()));
 	}
 
-	 @Scheduled(fixedRate = 600,initialDelay=500)
+	@Scheduled(fixedRate = 100, initialDelay = 500)
 	public void reportCurrentTime3() throws Exception {
 		if (!stompSession.isConnected()) {
-			helloClient = null;
+			client = null;
 		}
 		Initialize();
-		byte[] data3 = new byte[(int) (mv.get(2).total()*mv.get(2).elemSize())];
+		byte[] data3 = new byte[(int) (mv.get(2).total() * mv.get(2).elemSize())];
 		mv.get(2).get(0, 0, data3);
 		Thread.sleep(10);
-		helloClient.sendHello(stompSession,data3);
-		/*
-		 * StompSession session = ((CustomStompSessionHandler)
-		 * sessionHandler).getSession(); session.send("/app/server-side", new
-		 * ByteArrayModel());
-		 */
+		client.sendData(stompSession, data3);
+		
 		log.info("The time is now {}", dateFormat.format(new Date()));
 	}
 }
